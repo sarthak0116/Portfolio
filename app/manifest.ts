@@ -1,0 +1,13 @@
+import type { MetadataRoute } from 'next';
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: 'Sarthak Singh — Creative engineer',
+    short_name: 'Portfolio',
+    start_url: '/',
+    display: 'standalone',
+    background_color: '#10110f',
+    theme_color: '#d6ff3f',
+    icons: [],
+  };
+}

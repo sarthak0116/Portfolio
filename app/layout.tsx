@@ -1,0 +1,57 @@
+import type { Metadata, Viewport } from 'next';
+import { Bricolage_Grotesque, Geist, Geist_Mono, Instrument_Serif } from 'next/font/google';
+import Script from 'next/script';
+import { headers } from 'next/headers';
+import { site } from '@/content/site';
+import { themeScript } from '@/lib/theme';
+import './globals.css';
+
+const display = Bricolage_Grotesque({
+  variable: '--font-display',
+  subsets: ['latin'],
+  display: 'swap',
+});
+const serif = Instrument_Serif({
+  variable: '--font-serif',
+  subsets: ['latin'],
+  weight: '400',
+  style: ['normal', 'italic'],
+  display: 'swap',
+});
+const geist = Geist({ variable: '--font-sans', subsets: ['latin'], display: 'swap' });
+const mono = Geist_Mono({ variable: '--font-mono', subsets: ['latin'], display: 'swap' });
+
+export const metadata: Metadata = {
+  metadataBase: new URL(site.seo.url),
+  title: { default: site.seo.title, template: `%s — ${site.name}` },
+  description: site.seo.description,
+  alternates: { canonical: '/' },
+  openGraph: {
+    type: 'website',
+    title: site.seo.title,
+    description: site.seo.description,
+    url: site.seo.url,
+    siteName: site.name,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: site.seo.title,
+    description: site.seo.description,
+  },
+};
+
+export const viewport: Viewport = { themeColor: '#10110f', width: 'device-width', initialScale: 1 };
+
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const nonce = (await headers()).get('x-nonce') ?? undefined;
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${display.variable} ${serif.variable} ${geist.variable} ${mono.variable}`}>
+        <Script id="theme-init" nonce={nonce} strategy="beforeInteractive">
+          {themeScript}
+        </Script>
+        {children}
+      </body>
+    </html>
+  );
+}
