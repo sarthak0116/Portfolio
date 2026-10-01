@@ -928,3 +928,95 @@ h3 {
   opacity: 0;
   transition: opacity var(--slow) ease;
 }
+
+/* Splash: the first phase of the intro. Pure CSS, so it draws before any script runs. */
+.preloader-splash {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: clamp(1rem, 3svh, 2rem);
+  text-align: center;
+  transition:
+    opacity 320ms ease,
+    transform 520ms var(--ease-out);
+}
+.preloader[data-phase='count'] .preloader-splash,
+.preloader.is-leaving .preloader-splash {
+  opacity: 0;
+  transform: translateY(-5%) scale(0.96);
+}
+.preloader
+  :is(.preloader-top, .preloader-index, .preloader-stage, .preloader-bottom, .preloader-bar) {
+  transition: opacity 320ms ease;
+}
+.preloader[data-phase='splash']
+  :is(.preloader-top, .preloader-index, .preloader-stage, .preloader-bottom, .preloader-bar) {
+  opacity: 0;
+}
+.splash-mark {
+  width: clamp(4.5rem, 11vw, 8.5rem);
+  overflow: visible;
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+  animation: splash-turn 900ms var(--ease-out) both;
+}
+.splash-ring,
+.splash-spoke {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: splash-draw 520ms var(--ease-out) forwards;
+}
+.splash-ring {
+  stroke-width: 1.5;
+  animation-duration: 760ms;
+}
+.splash-spoke:nth-of-type(1) {
+  animation-delay: 120ms;
+}
+.splash-spoke:nth-of-type(2) {
+  animation-delay: 190ms;
+}
+.splash-spoke:nth-of-type(3) {
+  animation-delay: 260ms;
+}
+.splash-spoke:nth-of-type(4) {
+  animation-delay: 330ms;
+}
+.splash-name {
+  margin: 0;
+  font-size: clamp(2.75rem, 8vw, 7rem);
+  animation: splash-set 640ms 180ms var(--ease-out) both;
+}
+.splash-name em {
+  color: var(--accent);
+}
+.splash-role {
+  animation: splash-fade 400ms 480ms ease both;
+}
+@keyframes splash-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes splash-turn {
+  from {
+    transform: rotate(-90deg) scale(0.8);
+  }
+}
+/* The name arrives loosely tracked and tightens into place, like type being set. */
+@keyframes splash-set {
+  from {
+    opacity: 0;
+    letter-spacing: 0.14em;
+    transform: translateY(0.25em);
+  }
+}
+@keyframes splash-fade {
+  from {
+    opacity: 0;
+  }
+}

@@ -3,7 +3,9 @@
 import { useEffect, useRef } from 'react';
 import { site } from '@/content/site';
 
-const DURATION = 1300;
+/** The splash holds until this long after navigation start, however late hydration lands. */
+const SPLASH = 900;
+const DURATION = 1100;
 /** How long the name rests at 100 before the curtain lifts. */
 const HOLD = 180;
 const EXIT = 600;
@@ -18,9 +20,10 @@ const beats = [
 ] as const;
 
 /**
- * Typographic intro shown once per session on the home page. The <head> script decides whether it
- * shows (html.preloading); this component only runs the count and lifts the curtain. Any key or a
- * click skips it.
+ * Intro shown once per session on the home page, in two phases: a splash where the mark draws
+ * itself over the name (pure CSS, so it plays before hydration), then the typographic count. The
+ * <head> script decides whether it shows (html.preloading); this component runs the count and lifts
+ * the curtain. Any key or a click skips it.
  */
 export function Preloader() {
   const ref = useRef<HTMLDivElement>(null);
@@ -33,7 +36,8 @@ export function Preloader() {
     const count = el.querySelector<HTMLElement>('[data-count]');
     const words = Array.from(el.querySelectorAll<HTMLElement>('[data-word]'));
     const index = Array.from(el.querySelectorAll<HTMLElement>('[data-index]'));
-    const start = performance.now();
+    let start = 0;
+    let splash = 0;
     let frame = 0;
     let exit = 0;
     let hold = 0;
@@ -43,6 +47,7 @@ export function Preloader() {
       if (finished) return;
       finished = true;
       cancelAnimationFrame(frame);
+      window.clearTimeout(splash);
       window.clearTimeout(hold);
       if (count) count.textContent = '100';
       el.style.setProperty('--p', '1');
@@ -73,12 +78,20 @@ export function Preloader() {
       if (t < 1) frame = requestAnimationFrame(tick);
       else hold = window.setTimeout(finish, HOLD);
     };
-    frame = requestAnimationFrame(tick);
+    splash = window.setTimeout(
+      () => {
+        el.dataset.phase = 'count';
+        start = performance.now();
+        frame = requestAnimationFrame(tick);
+      },
+      Math.max(0, SPLASH - performance.now()),
+    );
 
     window.addEventListener('keydown', finish);
     el.addEventListener('click', finish);
     return () => {
       cancelAnimationFrame(frame);
+      window.clearTimeout(splash);
       window.clearTimeout(hold);
       window.clearTimeout(exit);
       window.removeEventListener('keydown', finish);
@@ -86,8 +99,34 @@ export function Preloader() {
     };
   }, []);
 
+  const [firstName, ...rest] = site.name.split(' ');
+  const lastName = rest.join(' ');
+
   return (
-    <div ref={ref} className="preloader" aria-hidden="true">
+    <div ref={ref} className="preloader" data-phase="splash" aria-hidden="true">
+      <div className="preloader-splash">
+        <svg className="splash-mark" viewBox="0 0 120 120">
+          <circle className="splash-ring" cx="60" cy="60" r="54" pathLength={1} />
+          {[0, 45, 90, 135].map((angle) => (
+            <line
+              key={angle}
+              className="splash-spoke"
+              x1="60"
+              y1="24"
+              x2="60"
+              y2="96"
+              pathLength={1}
+              transform={`rotate(${angle} 60 60)`}
+            />
+          ))}
+        </svg>
+        <p className="splash-name font-display">
+          {firstName} <em className="font-serif">{lastName}</em>
+        </p>
+        <p className="splash-role eyebrow">
+          {site.role} — Portfolio {new Date().getFullYear()}
+        </p>
+      </div>
       <div className="preloader-top eyebrow">
         <span>{site.name}</span>
         <span>{site.role}</span>
