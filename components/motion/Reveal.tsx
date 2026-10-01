@@ -53,17 +53,28 @@ export function Reveal({
       el.dataset.split = 'done';
     }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) {
-          el.classList.add('is-in');
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.2 },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
+    const root = document.documentElement;
+    let observer: IntersectionObserver | undefined;
+    const observe = () => {
+      observer = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) {
+            el.classList.add('is-in');
+            observer?.disconnect();
+          }
+        },
+        { threshold: 0.2 },
+      );
+      observer.observe(el);
+    };
+    // While the preloader covers the page, hold the reveal until its curtain starts to lift.
+    const waiting = root.classList.contains('preloading') && root.dataset.preloader !== 'done';
+    if (waiting) window.addEventListener('preloader:done', observe, { once: true });
+    else observe();
+    return () => {
+      window.removeEventListener('preloader:done', observe);
+      observer?.disconnect();
+    };
   }, []);
 
   const Component = Tag as 'div';

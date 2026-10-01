@@ -777,3 +777,131 @@ h3 {
   filter: drop-shadow(0 0 8px var(--accent));
   transition: opacity var(--fast) ease;
 }
+
+/* Preloader: a typographic curtain. Only visible while <html> carries .preloading. */
+.preloader {
+  display: none;
+}
+:root.preloading {
+  overflow: hidden;
+}
+:root.preloading .preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 1rem;
+  padding: 1.5rem var(--gutter) 2rem;
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 600ms var(--ease-out);
+}
+.preloader.is-leaving {
+  clip-path: inset(0 0 100% 0) !important;
+}
+.preloader-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.preloader-index {
+  position: absolute;
+  top: 13%;
+  left: var(--gutter);
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.preloader-index li {
+  opacity: 0.3;
+  transition: opacity var(--fast) ease;
+}
+.preloader-index li[data-on] {
+  color: var(--accent);
+  opacity: 1;
+}
+.preloader-index span {
+  display: inline-block;
+  width: 2.2em;
+}
+/* Every word shares one cell; a mask hides the ones waiting below and the ones already gone. */
+.preloader-stage {
+  display: grid;
+  align-self: center;
+  overflow: hidden;
+  padding-block: 0.12em 0.2em;
+  font-size: clamp(5.5rem, 19vw, 19rem);
+  line-height: 0.92;
+}
+.preloader-stage [data-word] {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+  transition: transform 300ms var(--ease-out);
+}
+.preloader-stage .font-display {
+  /* The width axis opens up as the count runs. */
+  font-variation-settings: 'wdth' calc(75 + var(--p, 0) * 25);
+}
+.preloader-stage .font-serif {
+  color: var(--accent);
+}
+.preloader-stage .preloader-name {
+  font-size: 0.62em;
+  align-self: center;
+}
+.preloader-stage [data-state='next'] {
+  transform: translateY(120%);
+}
+.preloader-stage [data-state='past'] {
+  transform: translateY(-125%);
+}
+/* The name is set smaller than its cell, so it has further to travel to clear the mask. */
+.preloader-stage .preloader-name[data-state='next'] {
+  transform: translateY(280%);
+}
+.preloader.is-leaving .preloader-stage [data-word] {
+  transform: translateY(-125%);
+}
+.preloader-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 2rem;
+}
+.preloader-count {
+  font-size: clamp(3.5rem, 13vw, 12rem);
+  line-height: 0.8;
+  font-variant-numeric: tabular-nums;
+  color: transparent;
+  background: linear-gradient(
+    to top,
+    var(--accent) calc(var(--p, 0) * 100%),
+    transparent calc(var(--p, 0) * 100%)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--text) 55%, transparent);
+}
+.preloader-bar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--accent);
+  transform: scaleX(var(--p, 0));
+  transform-origin: 0 50%;
+}
+@media (max-width: 800px) {
+  .preloader-top span:nth-child(2) {
+    display: none;
+  }
+  .preloader-index {
+    top: 16%;
+  }
+}

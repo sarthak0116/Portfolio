@@ -1,7 +1,7 @@
 export const features = {
   shape: false,
   flythrough: false,
-  preloader: false,
+  preloader: true,
   bloom: false,
   blog: false,
   contactForm: false,

@@ -6,8 +6,10 @@ import { Experience } from '@/components/sections/Experience';
 import { Contact } from '@/components/sections/Contact';
 import { Footer } from '@/components/sections/Footer';
 import { MasterLine } from '@/components/line/MasterLine';
+import { Preloader } from '@/components/motion/Preloader';
 import { ScrollProvider } from '@/components/motion/ScrollProvider';
 import { TypeMotion } from '@/components/motion/TypeMotion';
+import { features } from '@/config/features';
 import { site } from '@/content/site';
 
 export default function Home() {
@@ -16,6 +18,7 @@ export default function Home() {
       <a className="skip-link" href="#main">
         Skip to content
       </a>
+      {features.preloader ? <Preloader /> : null}
       <ScrollProvider />
       <TypeMotion />
       <Nav />
