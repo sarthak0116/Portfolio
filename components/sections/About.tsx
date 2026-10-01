@@ -1,3 +1,4 @@
+import { Reveal } from '@/components/motion/Reveal';
 import { skills } from '@/content/skills';
 import { SectionLabel } from '@/components/ui/SectionLabel';
 
@@ -7,9 +8,9 @@ export function About() {
       <div className="container">
         <SectionLabel number="02">Context</SectionLabel>
         <div className="about-grid">
-          <h2 id="about-title" className="font-display section-title">
+          <Reveal as="h2" id="about-title" className="font-display section-title">
             Making the <em className="font-serif">complex</em> feel clear.
-          </h2>
+          </Reveal>
           <div className="about-copy">
             <p>
               TODO: Replace this with a short, specific bio. Share the problems you like to solve,

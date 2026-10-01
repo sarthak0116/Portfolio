@@ -1,3 +1,4 @@
+import { Reveal } from '@/components/motion/Reveal';
 import type { Route } from 'next';
 import Link from 'next/link';
 import { SectionLabel } from '@/components/ui/SectionLabel';
@@ -23,9 +24,9 @@ export function Projects() {
       <div className="container">
         <SectionLabel number="03">Selected work</SectionLabel>
         <div className="section-heading-row">
-          <h2 id="projects-title" className="font-display section-title">
+          <Reveal as="h2" id="projects-title" className="font-display section-title">
             Proof, not <em className="font-serif">promises.</em>
-          </h2>
+          </Reveal>
           <p>Selected projects where strategy, craft, and shipping meet.</p>
         </div>
         <div className="project-grid">

@@ -1,3 +1,4 @@
+import { Reveal } from '@/components/motion/Reveal';
 import { SectionLabel } from '@/components/ui/SectionLabel';
 
 const entries = [
@@ -21,9 +22,9 @@ export function Experience() {
       <div className="container">
         <SectionLabel number="04">Practice</SectionLabel>
         <div className="section-heading-row">
-          <h2 id="experience-title" className="font-display section-title">
+          <Reveal as="h2" id="experience-title" className="font-display section-title">
             A line of <em className="font-serif">inquiry.</em>
-          </h2>
+          </Reveal>
           <p>Experience is a practice, not a list of titles.</p>
         </div>
         <ol className="timeline">

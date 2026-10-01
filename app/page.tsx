@@ -5,6 +5,8 @@ import { Projects } from '@/components/sections/Projects';
 import { Experience } from '@/components/sections/Experience';
 import { Contact } from '@/components/sections/Contact';
 import { Footer } from '@/components/sections/Footer';
+import { ScrollProvider } from '@/components/motion/ScrollProvider';
+import { TypeMotion } from '@/components/motion/TypeMotion';
 import { site } from '@/content/site';
 
 export default function Home() {
@@ -13,18 +15,20 @@ export default function Home() {
       <a className="skip-link" href="#main">
         Skip to content
       </a>
+      <ScrollProvider />
+      <TypeMotion />
       <Nav />
       <main id="main">
         <Hero />
-        <div className="marquee" aria-label="Creative engineering, motion, systems">
-          <span aria-hidden="true">
-            Creative engineering&nbsp; · &nbsp;Motion systems&nbsp; · &nbsp;Useful weirdness&nbsp; ·
-            &nbsp;
-          </span>
-          <span aria-hidden="true">
-            Creative engineering&nbsp; · &nbsp;Motion systems&nbsp; · &nbsp;Useful weirdness&nbsp; ·
-            &nbsp;
-          </span>
+        <div className="marquee" aria-hidden="true">
+          <div className="marquee-track">
+            {[0, 1, 2, 3].map((copy) => (
+              <span key={copy}>
+                Creative engineering&nbsp; ✳ &nbsp;Motion systems&nbsp; ✳ &nbsp;Useful
+                weirdness&nbsp; ✳ &nbsp;
+              </span>
+            ))}
+          </div>
         </div>
         <About />
         <Projects />

@@ -668,3 +668,75 @@ h3 {
     flex-wrap: wrap;
   }
 }
+
+/* Motion: type */
+[data-reveal] {
+  font-variation-settings: 'wdth' var(--wdth, 88);
+}
+.word-mask {
+  display: inline-block;
+  overflow: hidden;
+  /* Room for descenders and italic overhang inside the mask. */
+  padding: 0.08em 0.06em 0.16em;
+  margin: -0.08em -0.06em -0.16em;
+  vertical-align: top;
+}
+.word {
+  display: inline-block;
+  transform: translateY(115%) rotate(4deg);
+  transform-origin: 0 100%;
+  transition: transform var(--slow) var(--ease-out);
+  transition-delay: calc(var(--i) * 55ms);
+}
+[data-reveal].is-in .word,
+:root[data-motion='off'] .word {
+  transform: none;
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+.marquee-track span {
+  flex: none;
+  white-space: nowrap;
+}
+.section-number {
+  color: transparent;
+  background: linear-gradient(
+    to top,
+    var(--accent) calc(var(--fill, 1) * 100%),
+    transparent calc(var(--fill, 1) * 100%)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--text) 45%, transparent);
+}
+
+/* Hero fits one viewport so the pitch and both buttons sit above the fold. */
+.hero {
+  min-height: calc(100svh - 4.6rem);
+  padding-block: 0;
+}
+.hero-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: inherit;
+  padding-block: 2rem 2.5rem;
+}
+.hero .section-number {
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+}
+.hero-title {
+  max-width: none;
+  margin: clamp(1rem, 3svh, 2.5rem) 0 clamp(1.5rem, 4svh, 3rem);
+  font-size: min(var(--display-size), 25svh);
+}
+.availability {
+  width: fit-content;
+  margin-top: 1rem;
+}
+.scroll-hint {
+  bottom: 2.5rem;
+}
