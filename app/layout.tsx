@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next';
 import { Bricolage_Grotesque, Geist, Geist_Mono, Instrument_Serif } from 'next/font/google';
-import Script from 'next/script';
 import { headers } from 'next/headers';
 import { site } from '@/content/site';
 import { themeScript } from '@/lib/theme';
@@ -46,10 +45,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const nonce = (await headers()).get('x-nonce') ?? undefined;
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Runs before first paint so the saved theme and motion preference never flash. */}
+        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body className={`${display.variable} ${serif.variable} ${geist.variable} ${mono.variable}`}>
-        <Script id="theme-init" nonce={nonce} strategy="beforeInteractive">
-          {themeScript}
-        </Script>
         {children}
       </body>
     </html>

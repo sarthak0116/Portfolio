@@ -58,6 +58,10 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+/* Colours only animate while the user is toggling the theme, never on first load. */
+:root.theme-switching body,
+:root.theme-switching .site-nav {
   transition:
     background-color var(--medium) ease,
     color var(--medium) ease;
