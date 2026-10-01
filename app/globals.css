@@ -452,7 +452,8 @@ h3 {
   display: grid;
   place-items: center;
   overflow: hidden;
-  background: var(--text);
+  border: 1px solid color-mix(in srgb, var(--line) 18%, transparent);
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
   color: var(--accent);
   font-family: var(--font-display);
   font-size: clamp(5rem, 15vw, 12rem);
@@ -904,4 +905,26 @@ h3 {
   .preloader-index {
     top: 16%;
   }
+}
+
+/* WebGL backdrop: behind all content, never interactive. */
+.shape-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+.shape-layer[data-ready='true'] {
+  opacity: 1;
+}
+/* Tinted sections let the form show through instead of hiding it. */
+.about,
+.experience {
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+}
+:root.has-shape .hero-orbit {
+  opacity: 0;
+  transition: opacity var(--slow) ease;
 }

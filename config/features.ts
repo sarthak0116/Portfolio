@@ -1,5 +1,5 @@
 export const features = {
-  shape: false,
+  shape: true,
   flythrough: false,
   preloader: true,
   bloom: false,

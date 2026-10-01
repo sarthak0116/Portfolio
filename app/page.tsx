@@ -9,6 +9,7 @@ import { MasterLine } from '@/components/line/MasterLine';
 import { Preloader } from '@/components/motion/Preloader';
 import { ScrollProvider } from '@/components/motion/ScrollProvider';
 import { TypeMotion } from '@/components/motion/TypeMotion';
+import { ShapeLayer } from '@/components/three/ShapeLayer';
 import { features } from '@/config/features';
 import { site } from '@/content/site';
 
@@ -19,6 +20,7 @@ export default function Home() {
         Skip to content
       </a>
       {features.preloader ? <Preloader /> : null}
+      {features.shape ? <ShapeLayer /> : null}
       <ScrollProvider />
       <TypeMotion />
       <Nav />
