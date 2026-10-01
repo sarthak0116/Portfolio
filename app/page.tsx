@@ -5,6 +5,7 @@ import { Projects } from '@/components/sections/Projects';
 import { Experience } from '@/components/sections/Experience';
 import { Contact } from '@/components/sections/Contact';
 import { Footer } from '@/components/sections/Footer';
+import { MasterLine } from '@/components/line/MasterLine';
 import { ScrollProvider } from '@/components/motion/ScrollProvider';
 import { TypeMotion } from '@/components/motion/TypeMotion';
 import { site } from '@/content/site';
@@ -18,7 +19,8 @@ export default function Home() {
       <ScrollProvider />
       <TypeMotion />
       <Nav />
-      <main id="main">
+      <main id="main" className="page">
+        <MasterLine />
         <Hero />
         <div className="marquee" aria-hidden="true">
           <div className="marquee-track">
