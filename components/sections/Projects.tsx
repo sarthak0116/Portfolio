@@ -1,33 +1,19 @@
-import { Reveal } from '@/components/motion/Reveal';
 import type { Route } from 'next';
 import Link from 'next/link';
+import { Reveal } from '@/components/motion/Reveal';
+import { projects } from '@/content/projects';
 import { SectionLabel } from '@/components/ui/SectionLabel';
-
-const projects = [
-  {
-    slug: 'kinetic-systems',
-    title: 'Kinetic Systems',
-    description: 'TODO: A one-line case study summary.',
-    tags: ['Product', 'Interaction'],
-  },
-  {
-    slug: 'future-project',
-    title: 'TODO: Next project',
-    description: 'Replace this with a flagship project that shows range.',
-    tags: ['Brand', 'Web'],
-  },
-];
 
 export function Projects() {
   return (
     <section className="section projects" id="projects" aria-labelledby="projects-title">
       <div className="container">
-        <SectionLabel number="03">Selected work</SectionLabel>
+        <SectionLabel number="03">Projects</SectionLabel>
         <div className="section-heading-row">
           <Reveal as="h2" id="projects-title" className="font-display section-title">
-            Proof, not <em className="font-serif">promises.</em>
+            Things I’ve <em className="font-serif">built.</em>
           </Reveal>
-          <p>Selected projects where strategy, craft, and shipping meet.</p>
+          <p>Three projects. The code for each one is on GitHub.</p>
         </div>
         <div className="project-grid">
           {projects.map((project, index) => (
@@ -41,9 +27,12 @@ export function Projects() {
               </div>
               <div className="project-meta">
                 <div>
-                  <p className="eyebrow">{project.tags.join(' · ')}</p>
+                  <p className="eyebrow">
+                    {project.tags.join(' · ')}
+                    {project.status === 'In progress' ? ' · In progress' : ''}
+                  </p>
                   <h3>{project.title}</h3>
-                  <p>{project.description}</p>
+                  <p>{project.summary}</p>
                 </div>
                 <span className="card-arrow" aria-hidden="true">
                   ↗

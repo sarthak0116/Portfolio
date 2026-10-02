@@ -18,8 +18,9 @@ const siteSchema = z.object({
 
 export const site = siteSchema.parse({
   name: 'Sarthak Singh',
-  role: 'Creative engineer',
-  pitch: 'Building digital experiences that move people.',
+  role: 'Developer',
+  pitch:
+    'A ZIP extractor in C. A neural network in ARM64 assembly. A matchmaking app in React. I learn by building the thing myself.',
   availability: 'Open to roles',
   email: 'sarthaksingh0116@gmail.com',
   socials: {
@@ -28,9 +29,9 @@ export const site = siteSchema.parse({
     leetcode: 'https://leetcode.com/u/DN1lKN4VpW/',
   },
   seo: {
-    title: 'Sarthak Singh — Creative engineer',
+    title: 'Sarthak Singh — Developer',
     description:
-      'Sarthak Singh is a creative engineer crafting fast, expressive products for the web.',
+      'Sarthak Singh is a developer who builds things from scratch: a ZIP extractor in C, a neural network in ARM64 assembly, and web apps in React.',
     url: 'https://example.com', // TODO: set to the real domain once deployed
   },
 });

@@ -31,8 +31,8 @@ export default function Home() {
           <div className="marquee-track">
             {[0, 1, 2, 3].map((copy) => (
               <span key={copy}>
-                Creative engineering&nbsp; ✳ &nbsp;Motion systems&nbsp; ✳ &nbsp;Useful
-                weirdness&nbsp; ✳ &nbsp;
+                C&nbsp; ✳ &nbsp;ARM64 assembly&nbsp; ✳ &nbsp;Python&nbsp; ✳ &nbsp;JavaScript&nbsp; ✳
+                &nbsp;React&nbsp; ✳ &nbsp;
               </span>
             ))}
           </div>

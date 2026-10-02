@@ -2,7 +2,7 @@
 
 ## ADR-001 — Keep identity content explicitly unresolved
 
-The repository starts with `TODO:` placeholders rather than an invented name, employer, email, or metric. This keeps the visual system usable while making it impossible to mistake demo content for the portfolio owner's real history. See `PLACEHOLDERS.md`.
+Nothing on the site is invented. Projects, skills and the timeline are taken from the owner's public repositories, with no made-up employers or metrics. Facts that are not known yet are left out and listed in `PLACEHOLDERS.md`.
 
 ## ADR-002 — Static-first Stage 1
 

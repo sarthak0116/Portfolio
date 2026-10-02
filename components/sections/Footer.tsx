@@ -18,7 +18,7 @@ export function Footer() {
             LeetCode
           </a>
         </div>
-        <p className="eyebrow">Built with intent</p>
+        <p className="eyebrow">Built with Next.js and three.js</p>
       </div>
     </footer>
   );

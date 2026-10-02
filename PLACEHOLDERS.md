@@ -1,15 +1,11 @@
-# Placeholder checklist
+# What is still missing
 
-Replace every `TODO:` before launch. No generic identity, employer, metric, link, or image has been invented.
+The copy, projects, skills and timeline are real and come from the public GitHub repositories. These are the things only you can supply.
 
-- [ ] `content/site.ts`: name, email, booking URL, LinkedIn, GitHub, canonical URL, resume PDF.
-- [ ] `content/site.ts`: SEO title and description tuned to your name and target roles.
-- [ ] `components/sections/About.tsx`: bio, location/timezone, and current status.
-- [ ] `components/sections/Projects.tsx`: 2–3 flagship projects, summaries, and real slugs.
-- [ ] `content/projects/kinetic-systems.mdx`: replace example frontmatter and case study body.
-- [ ] `app/projects/[slug]/page.tsx`: move case-study content to the MDX loader when content is final; add metrics, screenshots, live links, and next-project navigation.
-- [ ] `content/experience/01-current.json`: current employer, role, dates, outcomes, and technology.
-- [ ] `components/sections/Experience.tsx`: replace timeline entries with validated experience data.
-- [ ] `public/resume.pdf`: add the downloadable resume.
-- [ ] `public/project-placeholder.svg`: replace with licensed project visuals and meaningful alt text.
-- [ ] `public/.well-known/security.txt`: replace the security contact address.
+- [ ] `content/site.ts` → `seo.url`: the real domain, once the site is deployed. Also set `NEXT_PUBLIC_SITE_URL`.
+- [ ] `content/site.ts` → `resumePath` and `public/resume.pdf`: add the PDF and the path, and the resume links appear.
+- [ ] `content/site.ts` → `bookingUrl`: optional. Add a booking link and the "Book a call" button appears.
+- [ ] `content/site.ts` → `availability`: currently "Open to roles". Make it specific if you can (internship, full-time, start date).
+- [ ] About section (`components/sections/About.tsx`): add where you are based, and your degree or college if you want it shown.
+- [ ] `content/timeline.ts`: add internships, jobs or studies. It currently lists projects only.
+- [ ] `content/projects.ts`: add a screenshot or demo link per project if you have one.

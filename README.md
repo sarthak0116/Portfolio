@@ -1,6 +1,6 @@
 # Sarthak Singh — portfolio
 
-A fast, accessible, static-first creative engineering portfolio built with Next.js, TypeScript, Tailwind CSS, and progressively enhanced motion/3D.
+My portfolio site. Next.js, TypeScript and Tailwind CSS, with scroll-driven motion and a WebGL backdrop layered on top of a page that works without either.
 
 ## Setup
 

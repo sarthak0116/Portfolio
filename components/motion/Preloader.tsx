@@ -14,9 +14,9 @@ const BEATS_SHARE = 0.6;
 
 /** One word per beat, alternating the display sans and the serif italic. */
 const beats = [
-  { label: 'Type', serif: false },
-  { label: 'motion', serif: true },
-  { label: 'Detail', serif: false },
+  { label: 'Bytes', serif: false },
+  { label: 'pixels', serif: true },
+  { label: 'Sockets', serif: false },
 ] as const;
 
 /**
@@ -156,7 +156,7 @@ export function Preloader() {
       </div>
       <div className="preloader-bottom">
         <p className="eyebrow">
-          Setting the type
+          Loading
           <br />
           Press any key to skip
         </p>

@@ -1,28 +1,31 @@
+import type { Metadata, Route } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLink } from '@/components/ui/ArrowLink';
+import { projectBySlug, projects } from '@/content/projects';
 import { site } from '@/content/site';
 
-const caseStudies = {
-  'kinetic-systems': {
-    title: 'Kinetic Systems',
-    summary: 'TODO: Replace with the project premise.',
-    role: 'TODO: Your role',
-    year: '2025',
-    stack: ['TypeScript', 'React', 'Next.js'],
-    outcome: 'TODO: Add an outcome with a metric.',
-    body: 'TODO: Write the full case study: context, constraints, decisions, and what changed.',
-  },
-} as const;
+type Props = { params: Promise<{ slug: string }> };
 
 export function generateStaticParams() {
-  return Object.keys(caseStudies).map((slug) => ({ slug }));
+  return projects.map((project) => ({ slug: project.slug }));
 }
 
-export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const project = projectBySlug((await params).slug);
+  if (!project) return {};
+  return {
+    title: project.title,
+    description: project.summary,
+    alternates: { canonical: `/projects/${project.slug}` },
+  };
+}
+
+export default async function ProjectPage({ params }: Props) {
   const { slug } = await params;
-  const project = caseStudies[slug as keyof typeof caseStudies];
+  const project = projectBySlug(slug);
   if (!project) notFound();
+  const next = projects[(projects.indexOf(project) + 1) % projects.length];
   return (
     <>
       <header className="case-nav">
@@ -30,7 +33,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         <a href={`mailto:${site.email}`}>Contact</a>
       </header>
       <main className="case-study">
-        <p className="eyebrow">Case study / {project.year}</p>
+        <p className="eyebrow">
+          Project / {project.year} / {project.status}
+        </p>
         <h1 className="font-display">{project.title}</h1>
         <p className="case-summary">{project.summary}</p>
         <div className="case-facts">
@@ -43,20 +48,28 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
             {project.stack.join(' · ')}
           </p>
           <p>
-            <span className="eyebrow">Outcome</span>
-            {project.outcome}
+            <span className="eyebrow">Where it stands</span>
+            {project.result}
           </p>
         </div>
-        <div className="case-placeholder">
-          <p className="eyebrow">Project visual</p>
-          <p>TODO: Add a descriptive screenshot or diagram with a real alt text.</p>
-        </div>
         <article>
-          <h2 className="font-display">The work</h2>
-          <p>{project.body}</p>
+          {project.sections.map((section) => (
+            <section key={section.heading}>
+              <h2 className="font-display">{section.heading}</h2>
+              <p>{section.text}</p>
+            </section>
+          ))}
+          <p className="case-links">
+            <ArrowLink href={project.repo} external>
+              Code on GitHub
+            </ArrowLink>
+          </p>
         </article>
-        <nav className="case-next" aria-label="Case study navigation">
-          <Link href="/">← All projects</Link>
+        <nav className="case-next" aria-label="More projects">
+          <Link href="/#projects">← All projects</Link>
+          {next && next.slug !== project.slug ? (
+            <Link href={`/projects/${next.slug}` as Route}>Next: {next.title} →</Link>
+          ) : null}
         </nav>
       </main>
     </>

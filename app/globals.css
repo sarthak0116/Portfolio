@@ -1020,3 +1020,46 @@ h3 {
     opacity: 0;
   }
 }
+
+/* Project pages */
+.case-study article section + section {
+  margin-top: 4rem;
+}
+.case-study article h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+.case-links {
+  margin-top: 4rem;
+}
+.case-next {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+.facts a {
+  text-underline-offset: 0.2em;
+}
+
+@media (min-width: 1100px) {
+  .project-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .project-image {
+    font-size: clamp(4rem, 9vw, 9rem);
+  }
+}
+
+/* The second line of the hero sits a size down so the name leads and both fit one screen. */
+.hero-sub {
+  display: inline-block;
+  font-size: 0.62em;
+  line-height: 1;
+}
+.project-meta h3,
+.timeline h3 {
+  line-height: 1.08;
+}

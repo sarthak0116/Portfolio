@@ -3,7 +3,7 @@ import Link from 'next/link';
 export default function ProjectNotFound() {
   return (
     <main className="not-found">
-      <p className="eyebrow">Case study not found</p>
+      <p className="eyebrow">Project not found</p>
       <h1 className="font-display">
         Wrong
         <br />

@@ -1,15 +1,19 @@
-# Content guide
+# Content
 
-The owner identity is intentionally left as `TODO:`. Fill `PLACEHOLDERS.md` before launch.
+All content is typed data in `content/`, checked with Zod when the site builds. Invalid content fails the build with a message naming the field.
 
 ## Add a project
 
-Add one `.mdx` file under `content/projects/` with frontmatter matching `content/projects/schema.ts`. Use a stable lowercase slug, outcome-led summary, exact role, stack, year, links, cover path, metrics, featured flag, and order. The MDX body should cover problem, role, key decisions, and outcome.
+Add an entry to the array in `content/projects.ts`. It needs a lowercase `slug`, `title`, one-line `summary`, `tags`, `year`, `role`, `stack`, `status` (`Shipped` or `In progress`), a plain `result` line, the `repo` URL and one or more `sections` (heading and text). The home page card, the `/projects/<slug>` page and the sitemap all come from that entry. Order in the array is order on the page.
 
-## Add experience
+## Add a timeline entry
 
-Add a JSON file under `content/experience/`. It must contain `company`, `role`, `dates`, non-empty `bullets`, and `tech`; validate it with `experienceSchema` when the loader is wired.
+Add an entry to `content/timeline.ts` with `dates`, `title`, `kind` and `description`. Most recent first.
 
-## Add a skill
+## Skills and profile
 
-Edit `content/skills.ts`. Proficiency is optional and must be between 0 and 1. Keep the visible list short enough to skim.
+`content/skills.ts` lists skills by group. `content/site.ts` holds the name, role, pitch, availability, email, links and SEO text. `resumePath` and `bookingUrl` are optional; their buttons only render when set.
+
+## Writing
+
+Write in the first person and say what was built and how. Leave out anything that cannot be backed by the code. `PLACEHOLDERS.md` lists what is still missing.

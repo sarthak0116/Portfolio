@@ -16,7 +16,7 @@ export const sections = [
   {
     id: 'hero',
     title: 'Home',
-    eyebrow: '01 / Arrival',
+    eyebrow: '01 / Intro',
     range: [0, 0.2],
     room: 'hero',
     controlPoints: [
@@ -27,7 +27,7 @@ export const sections = [
   {
     id: 'about',
     title: 'About',
-    eyebrow: '02 / Context',
+    eyebrow: '02 / About',
     range: [0.2, 0.4],
     room: 'about',
     controlPoints: [
@@ -38,7 +38,7 @@ export const sections = [
   {
     id: 'projects',
     title: 'Projects',
-    eyebrow: '03 / Selected work',
+    eyebrow: '03 / Projects',
     range: [0.4, 0.65],
     room: 'projects',
     controlPoints: [
@@ -49,8 +49,8 @@ export const sections = [
   },
   {
     id: 'experience',
-    title: 'Experience',
-    eyebrow: '04 / Practice',
+    title: 'Timeline',
+    eyebrow: '04 / Timeline',
     range: [0.65, 0.84],
     room: 'experience',
     controlPoints: [
@@ -62,7 +62,7 @@ export const sections = [
   {
     id: 'contact',
     title: 'Contact',
-    eyebrow: '05 / Next move',
+    eyebrow: '05 / Contact',
     range: [0.84, 1],
     room: 'contact',
     controlPoints: [

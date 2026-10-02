@@ -1,33 +1,14 @@
 import { z } from 'zod';
 
 export const skillsSchema = z.object({
-  groups: z.array(
-    z.object({
-      name: z.string(),
-      items: z.array(
-        z.object({ name: z.string(), proficiency: z.number().min(0).max(1).optional() }),
-      ),
-    }),
-  ),
+  groups: z.array(z.object({ name: z.string(), items: z.array(z.string().min(1)).min(1) })).min(1),
 });
 
+/** Only things used in the projects on this site. */
 export const skills = skillsSchema.parse({
   groups: [
-    {
-      name: 'Build',
-      items: [
-        { name: 'TypeScript', proficiency: 0.95 },
-        { name: 'React', proficiency: 0.95 },
-        { name: 'Next.js', proficiency: 0.9 },
-      ],
-    },
-    {
-      name: 'Shape',
-      items: [
-        { name: 'Design systems', proficiency: 0.9 },
-        { name: 'Motion', proficiency: 0.85 },
-        { name: 'WebGL', proficiency: 0.7 },
-      ],
-    },
+    { name: 'Languages', items: ['C', 'Python', 'JavaScript', 'ARM64 assembly'] },
+    { name: 'Web', items: ['React', 'Express', 'MongoDB', 'Socket.IO', 'Tailwind CSS'] },
+    { name: 'Tools', items: ['Git', 'Make', 'TensorFlow/Keras'] },
   ],
 });
