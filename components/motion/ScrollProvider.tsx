@@ -27,7 +27,8 @@ export function ScrollProvider() {
       };
     }
 
-    const lenis = new Lenis({ lerp: 0.1, anchors: true });
+    const lenis = // Anchors land just under the nav (via scroll-margin), on the content rather than the title card.
+      new Lenis({ lerp: 0.1, anchors: true });
     let frame = 0;
     const tick = (time: number) => {
       lenis.raf(time);

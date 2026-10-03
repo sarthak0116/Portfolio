@@ -5,11 +5,12 @@ import { Projects } from '@/components/sections/Projects';
 import { Experience } from '@/components/sections/Experience';
 import { Contact } from '@/components/sections/Contact';
 import { Footer } from '@/components/sections/Footer';
-import { MasterLine } from '@/components/line/MasterLine';
+import { AsciiField } from '@/components/film/AsciiField';
+import { FilmLayer } from '@/components/film/FilmLayer';
+import { Scrubber } from '@/components/film/Scrubber';
 import { Preloader } from '@/components/motion/Preloader';
 import { ScrollProvider } from '@/components/motion/ScrollProvider';
-import { TypeMotion } from '@/components/motion/TypeMotion';
-import { ShapeLayer } from '@/components/three/ShapeLayer';
+import { WorldLayer } from '@/components/three/WorldLayer';
 import { features } from '@/config/features';
 import { site } from '@/content/site';
 
@@ -20,23 +21,14 @@ export default function Home() {
         Skip to content
       </a>
       {features.preloader ? <Preloader /> : null}
-      {features.shape ? <ShapeLayer /> : null}
+      {features.world ? <WorldLayer /> : null}
+      <AsciiField />
       <ScrollProvider />
-      <TypeMotion />
+      <FilmLayer />
+      <Scrubber />
       <Nav />
       <main id="main" className="page">
-        <MasterLine />
         <Hero />
-        <div className="marquee" aria-hidden="true">
-          <div className="marquee-track">
-            {[0, 1, 2, 3].map((copy) => (
-              <span key={copy}>
-                Creative engineering&nbsp; ✳ &nbsp;Motion systems&nbsp; ✳ &nbsp;Useful
-                weirdness&nbsp; ✳ &nbsp;
-              </span>
-            ))}
-          </div>
-        </div>
         <About />
         <Projects />
         <Experience />

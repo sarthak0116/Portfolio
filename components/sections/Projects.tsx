@@ -1,6 +1,7 @@
 import { Reveal } from '@/components/motion/Reveal';
 import type { Route } from 'next';
 import Link from 'next/link';
+import { Intertitle } from '@/components/ui/Intertitle';
 import { SectionLabel } from '@/components/ui/SectionLabel';
 
 const projects = [
@@ -21,7 +22,8 @@ const projects = [
 export function Projects() {
   return (
     <section className="section projects" id="projects" aria-labelledby="projects-title">
-      <div className="container">
+      <Intertitle number="03">Selected work</Intertitle>
+      <div className="container" id="projects-body">
         <SectionLabel number="03">Selected work</SectionLabel>
         <div className="section-heading-row">
           <Reveal as="h2" id="projects-title" className="font-display section-title">

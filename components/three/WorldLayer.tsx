@@ -1,9 +1,9 @@
 'use client';
 
 import { Component, lazy, Suspense, useEffect, useRef, useState } from 'react';
-import { sections } from '@/config/sections';
 import { usePref } from '@/lib/prefs';
 import { pickQuality, qualitySettings, type Quality } from '@/lib/quality';
+import { measureStops } from '@/lib/stops';
 
 // three.js and the scene load only after the page is interactive and only if they will be used.
 const Scene = lazy(() => import('./Scene'));
@@ -28,24 +28,15 @@ function hasWebGL(): boolean {
   }
 }
 
-/** Page progress at which each section's pose should be fully reached. */
-function measureStops(): number[] {
-  const max = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
-  return sections.map((section, index) => {
-    if (index === 0) return 0;
-    const top = document.getElementById(section.id)?.getBoundingClientRect().top ?? 0;
-    return Math.min(1, Math.max(0, (top + window.scrollY - window.innerHeight * 0.35) / max));
-  });
-}
-
-/** Fixed WebGL backdrop. Renders nothing when 3D is off for this device or preference. */
-export function ShapeLayer() {
+/** Fixed WebGL world behind the page. Renders nothing when 3D is off for this device or preference. */
+export function WorldLayer() {
   const motion = usePref<'on' | 'off'>('motion', 'on');
-  const theme = usePref<'light' | 'dark'>('theme', 'dark');
   const [quality, setQuality] = useState<Quality>('off');
   const [lost, setLost] = useState(false);
   const [ready, setReady] = useState(false);
   const stops = useRef<number[]>([]);
+  // A ?quality= override pins the tier, for testing; otherwise a slow device steps itself down.
+  const locked = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -55,6 +46,12 @@ export function ShapeLayer() {
         deviceMemory?: number;
         connection?: { saveData?: boolean };
       };
+      const forced = new URLSearchParams(window.location.search).get('quality');
+      if (forced === 'high' || forced === 'medium' || forced === 'low' || forced === 'off') {
+        locked.current = true;
+        setQuality(forced);
+        return;
+      }
       setQuality(
         pickQuality({
           webgl: hasWebGL(),
@@ -87,24 +84,32 @@ export function ShapeLayer() {
     return () => observer.disconnect();
   }, []);
 
+  // Sustained low frame rate: high to medium to low, then the 3D world switches off and the page
+  // keeps its grade and the ASCII layer.
+  const degrade = () => {
+    if (locked.current) return;
+    setQuality((q) => (q === 'high' ? 'medium' : q === 'medium' ? 'low' : 'off'));
+  };
+
   const active = quality !== 'off' && !lost;
   useEffect(() => {
-    // Lets CSS retire the flat hero ring once the real form is on screen.
-    document.documentElement.classList.toggle('has-shape', active && ready);
-    return () => document.documentElement.classList.remove('has-shape');
+    // Lets CSS retire the flat hero eclipse once the real ring is on screen.
+    document.documentElement.classList.toggle('has-world', active && ready);
+    return () => document.documentElement.classList.remove('has-world');
   }, [active, ready]);
 
   if (!active) return null;
   return (
-    <div className="shape-layer" data-ready={ready} aria-hidden="true">
+    <div className="world-layer" data-ready={ready} aria-hidden="true">
       <Boundary>
         <Suspense fallback={null}>
           <Scene
+            key={quality}
             settings={qualitySettings[quality]}
-            theme={theme}
             stops={stops}
             onReady={() => setReady(true)}
             onLost={() => setLost(true)}
+            onSlow={degrade}
           />
         </Suspense>
       </Boundary>

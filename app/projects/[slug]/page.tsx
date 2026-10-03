@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { FilmLayer } from '@/components/film/FilmLayer';
 import { ArrowLink } from '@/components/ui/ArrowLink';
 import { site } from '@/content/site';
 
@@ -25,6 +26,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   if (!project) notFound();
   return (
     <>
+      <FilmLayer variant="plain" />
       <header className="case-nav">
         <Link href="/">← Back home</Link>
         <a href={`mailto:${site.email}`}>Contact</a>

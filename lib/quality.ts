@@ -26,8 +26,12 @@ export function pickQuality(signals: DeviceSignals): Quality {
   return 'high';
 }
 
+/**
+ * What each tier of the 3D world costs: ring tessellation, whether post-processing runs (bloom,
+ * with lens aberration and multisampling on the top tier), and the pixel ratio.
+ */
 export const qualitySettings = {
-  high: { detail: 48, dpr: 2, satellites: 9, antialias: true },
-  medium: { detail: 24, dpr: 1.5, satellites: 5, antialias: true },
-  low: { detail: 10, dpr: 1, satellites: 0, antialias: false },
+  high: { segments: 28, post: true, aberration: true, multisampling: 4, dpr: 2 },
+  medium: { segments: 20, post: true, aberration: false, multisampling: 0, dpr: 1.5 },
+  low: { segments: 14, post: false, aberration: false, multisampling: 0, dpr: 1 },
 } as const satisfies Record<Exclude<Quality, 'off'>, object>;

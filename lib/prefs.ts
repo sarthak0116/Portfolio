@@ -23,12 +23,7 @@ export function usePref<T extends string>(key: PrefKey, fallback: T): T {
 }
 
 export function setPref(key: PrefKey, value: string, storageKey: string, stored: string) {
-  const root = document.documentElement;
-  if (key === 'theme') {
-    root.classList.add('theme-switching');
-    window.setTimeout(() => root.classList.remove('theme-switching'), 500);
-  }
-  root.dataset[key] = value;
+  document.documentElement.dataset[key] = value;
   try {
     localStorage.setItem(storageKey, stored);
   } catch {

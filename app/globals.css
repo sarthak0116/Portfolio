@@ -1,38 +1,30 @@
 @import 'tailwindcss';
 
-/* Tokens — mirror config/tokens.ts. Change the accent here and there only. */
+/* Tokens. See docs/DESIGN.md: one dark world, one warm light. Dark is the only theme. */
 :root {
-  --accent: #5b6f00;
-  --ink: #11110f;
-  --paper: #f3f1eb;
-  --night: #10110f;
+  --void: #040405;
+  --bone: #e9e6df;
+  --steel: #8b929b;
+  /* Tungsten is light, never decoration: the ring's rim, focus, link hover, selection. */
+  --accent: #e9b06a;
 
-  --bg: var(--paper);
-  --surface: #eae7de;
-  --text: var(--ink);
-  --muted: #5c5b55;
-  --line: var(--ink);
+  --bg: var(--void);
+  --surface: #0b0c0e;
+  --text: var(--bone);
+  --muted: var(--steel);
+  --line: var(--bone);
 
   --gutter: clamp(1.25rem, 4vw, 5rem);
-  --section-space: clamp(5rem, 13vw, 13rem);
+  --section-space: clamp(5rem, 11vw, 11rem);
   --body-size: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
-  --display-size: clamp(4rem, 15vw, 13rem);
+  --nav-height: 4.5rem;
 
-  --fast: 180ms;
-  --medium: 450ms;
-  --slow: 900ms;
+  --fast: 240ms;
+  --medium: 600ms;
+  --slow: 1400ms;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-film: cubic-bezier(0.22, 0.61, 0.36, 1);
 
-  color-scheme: light;
-}
-
-:root[data-theme='dark'] {
-  --accent: #d6ff3f;
-  --bg: var(--night);
-  --surface: #181a16;
-  --text: #f3f1eb;
-  --muted: #a3a298;
-  --line: #f3f1eb;
   color-scheme: dark;
 }
 
@@ -43,6 +35,8 @@
   box-sizing: border-box;
 }
 html {
+  /* Focused elements scroll clear of the sticky nav and the bottom readout. */
+  scroll-padding-block: 6rem;
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
 }
@@ -55,16 +49,9 @@ body {
   color: var(--text);
   font-family: var(--font-sans), system-ui, sans-serif;
   font-size: var(--body-size);
-  line-height: 1.6;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-}
-/* Colours only animate while the user is toggling the theme, never on first load. */
-:root.theme-switching body,
-:root.theme-switching .site-nav {
-  transition:
-    background-color var(--medium) ease,
-    color var(--medium) ease;
 }
 a {
   color: inherit;
@@ -78,36 +65,56 @@ h3 {
   text-wrap: balance;
 }
 :focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
+  outline: 1px solid var(--accent);
+  outline-offset: 4px;
   border-radius: 2px;
 }
 ::selection {
   background: var(--accent);
-  color: var(--bg);
+  color: #000;
 }
 
-/* Typography */
+/* Typography: title cards, narration, slate. */
 .font-display {
   font-family: var(--font-display), system-ui, sans-serif;
-  font-weight: 600;
-  line-height: 0.9;
-  letter-spacing: -0.055em;
-  font-variation-settings: 'wdth' 88;
+  font-weight: 300;
+  line-height: 1.12;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  /* A faint warm halation, as if the letters were lit. */
+  text-shadow: 0 0 48px color-mix(in srgb, var(--accent) 16%, transparent);
 }
 .font-serif {
   font-family: var(--font-serif), Georgia, serif;
   font-style: italic;
   font-weight: 400;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.font-display em {
+  font-size: 1.14em;
+  letter-spacing: 0;
 }
 .eyebrow {
   margin: 0;
   color: var(--muted);
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 0.72rem;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
+}
+
+/* Body copy keeps a faint dark halo, so it stays legible wherever the ring's light falls behind it. */
+.section p,
+.section li,
+.site-footer,
+.eyebrow {
+  text-shadow: 0 0 14px rgb(0 0 0 / 0.65);
+}
+
+/* Anchors land just under the sticky nav. */
+[id$='-body'] {
+  scroll-margin-top: calc(var(--nav-height) + 1rem);
 }
 
 /* Layout */
@@ -121,6 +128,9 @@ h3 {
   position: relative;
   padding-block: var(--section-space);
 }
+.page {
+  position: relative;
+}
 .skip-link {
   position: absolute;
   left: var(--gutter);
@@ -128,7 +138,7 @@ h3 {
   z-index: 100;
   padding: 0.6rem 1rem;
   background: var(--accent);
-  color: var(--bg);
+  color: #000;
   font-family: var(--font-mono), monospace;
   font-size: 0.75rem;
   text-decoration: none;
@@ -146,18 +156,130 @@ h3 {
   transition-duration: 0.01ms !important;
 }
 
-/* Components */
+/* Film layer: grain, vignette and letterbox above everything, never interactive. */
+.film {
+  --bars: 0;
+  --bar-max: var(--nav-height);
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  overflow: hidden;
+  pointer-events: none;
+}
+.film-grain {
+  position: absolute;
+  inset: -96px;
+  background-image: var(--grain);
+  background-size: 192px 192px;
+  opacity: 0.07;
+  /* Its own compositor layer, so the jitter never repaints the page. */
+  will-change: transform;
+  animation: grain 0.8s steps(1) infinite;
+}
+.film-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, transparent 52%, rgb(0 0 0 / 0.6) 100%);
+}
+.film-fade {
+  position: absolute;
+  inset: auto 0 0;
+  height: 4.5rem;
+  background: linear-gradient(to top, rgb(0 0 0 / 0.82), transparent);
+}
+.film-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: calc(var(--bars) * var(--bar-max));
+  background: #000;
+}
+.film-bar-top {
+  top: 0;
+}
+.film-bar-bottom {
+  bottom: 0;
+}
+/* The viewfinder readout: REC, timecode, act, and the renderer's real numbers. */
+.film-hud {
+  position: absolute;
+  left: 50%;
+  bottom: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.18em;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+.film-hud-dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: rec 1.6s steps(1) infinite;
+}
+@keyframes rec {
+  50% {
+    opacity: 0.15;
+  }
+}
+@media (max-width: 800px) {
+  .film-hud-stats {
+    display: none;
+  }
+}
+@keyframes grain {
+  0% {
+    transform: translate(0, 0);
+  }
+  17% {
+    transform: translate(-37px, 21px);
+  }
+  33% {
+    transform: translate(29px, -48px);
+  }
+  50% {
+    transform: translate(-61px, -17px);
+  }
+  67% {
+    transform: translate(44px, 52px);
+  }
+  83% {
+    transform: translate(-12px, 63px);
+  }
+}
+/* Portrait screens have no room to give away: no letterbox. */
+@media (max-aspect-ratio: 1/1) {
+  .film {
+    --bar-max: 0px;
+  }
+}
+
+/* Navigation: it lives on the top bar, and floats over the picture when the bars open. */
 .site-nav {
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: 60;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1.25rem var(--gutter);
-  background: color-mix(in srgb, var(--bg) 86%, transparent);
-  backdrop-filter: blur(16px);
+  height: var(--nav-height);
+  padding: 0 var(--gutter);
+}
+/* A soft black fall-off behind the nav so content never collides with it when the bars are open. */
+.site-nav::before {
+  position: absolute;
+  inset: 0 0 -1.5rem;
+  z-index: -1;
+  background: linear-gradient(to bottom, #000 0, rgb(0 0 0 / 0.92) 55%, transparent);
+  content: '';
 }
 .wordmark,
 .site-nav a {
@@ -165,17 +287,21 @@ h3 {
 }
 .wordmark {
   display: inline-flex;
+  white-space: nowrap;
   align-items: center;
-  gap: 0.6rem;
-  font-family: var(--font-mono);
-  font-size: 0.76rem;
-  font-weight: 600;
+  gap: 0.75rem;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 400;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.26em;
 }
-.wordmark span:first-child {
-  color: var(--accent);
-  font-size: 1.25rem;
+.wordmark-ring {
+  width: 0.85rem;
+  height: 0.85rem;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 45%, transparent);
 }
 .nav-list,
 .nav-actions,
@@ -192,26 +318,33 @@ h3 {
   margin: 0;
   padding: 0;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 .nav-list a,
 .resume-link,
-.site-footer a,
 .case-nav a {
-  opacity: 0.72;
-  transition: opacity 0.2s ease;
+  opacity: 0.7;
+  transition: opacity var(--fast) ease;
 }
 .nav-list a:hover,
 .resume-link:hover,
-.site-footer a:hover,
 .case-nav a:hover {
   opacity: 1;
 }
+/* Footer links stay at full strength: the muted colour already sits at 6.5:1 and dimming it fails AA. */
+.site-footer a {
+  transition: color var(--fast) ease;
+}
+.site-footer a:hover {
+  color: var(--text);
+}
 .resume-link {
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 40%, transparent);
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 .control-button {
@@ -219,7 +352,7 @@ h3 {
   min-width: 2.1rem;
   min-height: 2.1rem;
   place-items: center;
-  border: 1px solid color-mix(in srgb, var(--line) 35%, transparent);
+  border: 1px solid color-mix(in srgb, var(--line) 28%, transparent);
   border-radius: 999px;
   background: transparent;
   color: var(--text);
@@ -227,11 +360,12 @@ h3 {
   font: inherit;
   font-family: var(--font-mono);
   font-size: 0.65rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 .control-button-wide {
   min-width: auto;
-  padding-inline: 0.75rem;
+  padding-inline: 0.85rem;
 }
 .sr-only {
   position: absolute;
@@ -244,57 +378,155 @@ h3 {
   white-space: nowrap;
   border: 0;
 }
+
+/* Chapters: the mobile act menu, a full-screen black card of title-card links. */
+.chapters-button {
+  position: relative;
+  z-index: 91;
+  display: none;
+}
+.chapters {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  align-content: center;
+  gap: 0.25rem;
+  padding: 5rem var(--gutter) 3rem;
+  background: rgb(0 0 0 / 0.94);
+  animation: chapters-in 500ms var(--ease-film) both;
+}
+.chapters a {
+  display: flex;
+  align-items: baseline;
+  gap: 1.25rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 12%, transparent);
+  text-decoration: none;
+}
+.chapters-act {
+  min-width: 4.6rem;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.chapters-name {
+  font-family: var(--font-serif);
+  font-size: clamp(1.9rem, 9vw, 2.6rem);
+  font-style: italic;
+  line-height: 1.1;
+}
+.chapters a:hover .chapters-name,
+.chapters a:focus-visible .chapters-name {
+  color: var(--accent);
+}
+@keyframes chapters-in {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+  }
+}
+
+/* Act slate */
 .section-label {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
 }
-.section-number {
-  color: color-mix(in srgb, var(--text) 16%, transparent);
-  font-family: var(--font-display);
-  font-size: clamp(4rem, 9vw, 8rem);
-  line-height: 0.7;
-  letter-spacing: -0.08em;
+.section-label::after {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--line) 28%, transparent),
+    transparent
+  );
+  content: '';
 }
+
+/* Act I: arrival. The eclipse is the CSS stand-in for the 3D ring and retires when WebGL is up. */
 .hero {
-  min-height: calc(100svh - 4rem);
-  display: grid;
-  align-items: center;
+  min-height: calc(100svh - var(--nav-height));
+  padding-block: 0;
   overflow: hidden;
+}
+.hero::before {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    60% 45% at 78% 52%,
+    color-mix(in srgb, var(--accent) 9%, transparent),
+    transparent 70%
+  );
+  content: '';
+}
+.hero-eclipse {
+  position: absolute;
+  top: 50%;
+  right: -9vmin;
+  width: 64vmin;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #000;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent) 70%, #fff 10%),
+    0 0 32px 2px color-mix(in srgb, var(--accent) 55%, transparent),
+    0 0 150px 36px color-mix(in srgb, var(--accent) 20%, transparent);
+  transform: translateY(-52%);
+}
+:root.has-world .hero-eclipse,
+:root.has-ascii .hero-eclipse {
+  opacity: 0;
+  transition: opacity var(--slow) ease;
 }
 .hero-inner {
   position: relative;
-  padding-block: 8rem 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: calc(100svh - var(--nav-height));
+  /* Clear of the bottom bar, so the pitch and buttons are never under the letterbox. */
+  padding-block: 1.5rem calc(var(--nav-height) + 1.5rem);
+}
+.hero-card {
+  display: grid;
+  justify-items: center;
+  gap: 1.5rem;
+  text-align: center;
 }
 .hero-title {
-  max-width: 12ch;
-  margin: 4rem 0 5rem;
-  font-size: var(--display-size);
+  margin: 0;
+  padding-left: 0.2em;
+  font-size: clamp(2.2rem, 6.4vw, 7rem);
+  letter-spacing: 0.2em;
 }
-.hero-title em,
-.section-title em,
-.contact-title em,
-.not-found em {
-  color: var(--accent);
+.hero-role {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
 }
 .availability {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  margin: 2rem 0 0;
-  border: 1px solid color-mix(in srgb, var(--line) 25%, transparent);
-  border-radius: 99px;
-  padding: 0.35rem 0.7rem;
+  gap: 0.6rem;
+  margin: 0;
+  color: var(--muted);
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 .status-dot {
-  width: 0.45rem;
-  height: 0.45rem;
+  width: 0.4rem;
+  height: 0.4rem;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--accent) 20%, transparent);
+  box-shadow: 0 0 12px 2px color-mix(in srgb, var(--accent) 60%, transparent);
 }
 .hero-bottom {
   display: flex;
@@ -305,91 +537,48 @@ h3 {
 .hero-pitch {
   max-width: 24rem;
   margin: 0;
-  font-size: clamp(1.15rem, 2vw, 1.8rem);
-  line-height: 1.25;
+  font-size: clamp(1.2rem, 2vw, 1.7rem);
+  line-height: 1.3;
 }
 .arrow-link {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
   width: fit-content;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 40%, transparent);
   padding-bottom: 0.25rem;
+  font-size: 0.95rem;
   text-decoration: none;
   transition:
-    color 0.2s ease,
-    gap 0.2s ease;
+    color var(--fast) ease,
+    border-color var(--fast) ease,
+    gap var(--fast) ease;
 }
 .arrow-link:hover {
+  border-color: var(--accent);
   color: var(--accent);
   gap: 0.9rem;
 }
-.scroll-hint {
-  position: absolute;
-  bottom: 3rem;
-  right: 0;
-  display: flex;
-  gap: 0.75rem;
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  text-transform: uppercase;
-  text-decoration: none;
-  writing-mode: vertical-rl;
-}
-.hero-orbit {
-  position: absolute;
-  top: 14%;
-  right: -5rem;
-  width: 24rem;
-  height: 24rem;
-  border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
-  border-radius: 50%;
-  color: var(--accent);
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  transform: rotate(-24deg);
-}
-.hero-orbit span {
-  position: absolute;
-  top: -1rem;
-  left: 50%;
-  white-space: nowrap;
-}
-.marquee {
-  overflow: hidden;
-  padding: 0.8rem var(--gutter);
-  border-block: 1px solid color-mix(in srgb, var(--line) 20%, transparent);
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-.marquee span {
-  display: inline-block;
-}
-.about,
-.experience {
-  background: var(--surface);
+
+/* Section headlines are title cards: small, wide, quiet. */
+.section-title,
+.contact-title {
+  max-width: 18ch;
+  margin: 0;
+  font-size: clamp(1.9rem, 4.2vw, 4.2rem);
+  line-height: 1.2;
+  letter-spacing: 0.14em;
 }
 .about-grid,
 .section-heading-row {
   display: grid;
   grid-template-columns: minmax(0, 1.3fr) minmax(16rem, 0.7fr);
   gap: 3rem;
-  margin-top: 7rem;
-}
-.section-title {
-  max-width: 10ch;
-  margin: 0;
-  font-size: clamp(3.5rem, 8vw, 8rem);
+  margin-top: 6rem;
 }
 .about-copy {
   max-width: 34rem;
+  color: color-mix(in srgb, var(--text) 82%, transparent);
 }
 .about-copy p + p {
   margin-top: 2rem;
@@ -399,7 +588,7 @@ h3 {
   grid-template-columns: 1.3fr 0.7fr;
   gap: 3rem;
   margin-top: 9rem;
-  border-top: 1px solid color-mix(in srgb, var(--line) 25%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--line) 18%, transparent);
   padding-top: 1.5rem;
 }
 .skill-list {
@@ -410,11 +599,13 @@ h3 {
   padding: 0;
 }
 .skill-list li {
-  border: 1px solid color-mix(in srgb, var(--line) 25%, transparent);
+  border: 1px solid color-mix(in srgb, var(--line) 22%, transparent);
   border-radius: 99px;
-  padding: 0.45rem 0.8rem;
+  padding: 0.45rem 0.9rem;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 .facts {
   display: grid;
@@ -426,7 +617,9 @@ h3 {
 .facts strong {
   color: var(--text);
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.66rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 .section-heading-row {
@@ -437,10 +630,12 @@ h3 {
   max-width: 18rem;
   color: var(--muted);
 }
+
+/* Act III: work, framed in scope (2.39:1) like stills from a filmography. */
 .project-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
+  gap: 3rem 1.5rem;
   margin-top: 5rem;
 }
 .project-card {
@@ -448,32 +643,53 @@ h3 {
   text-decoration: none;
 }
 .project-image {
-  aspect-ratio: 1.4;
+  position: relative;
+  aspect-ratio: 2.39;
   display: grid;
-  place-items: center;
+  place-items: end start;
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--line) 18%, transparent);
-  background: color-mix(in srgb, var(--surface) 82%, transparent);
-  color: var(--accent);
-  font-family: var(--font-display);
-  font-size: clamp(5rem, 15vw, 12rem);
-  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  padding: 1.1rem 1.25rem;
+  background:
+    radial-gradient(
+      70% 90% at 70% 40%,
+      color-mix(in srgb, var(--accent) 10%, transparent),
+      transparent 70%
+    ),
+    linear-gradient(160deg, #15171b, #08090b);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  transition:
+    transform var(--slow) var(--ease-out),
+    filter var(--slow) var(--ease-out);
 }
 .project-card:hover .project-image {
-  transform: translateY(-0.5rem);
+  transform: scale(1.015);
+}
+.project-grid:has(.project-card:hover) .project-card:not(:hover) {
+  opacity: 0.45;
+  filter: blur(1.5px);
+}
+.project-card {
+  transition:
+    opacity var(--medium) ease,
+    filter var(--medium) ease;
 }
 .project-meta {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-  padding-top: 1rem;
+  padding-top: 1.25rem;
 }
 .project-meta h3,
 .timeline h3 {
   margin: 0.5rem 0;
   font-family: var(--font-display);
-  font-size: clamp(1.6rem, 3vw, 2.5rem);
-  letter-spacing: -0.04em;
+  font-size: clamp(1.1rem, 2vw, 1.6rem);
+  font-weight: 300;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 .project-meta p:not(.eyebrow),
 .timeline li > div p {
@@ -482,8 +698,11 @@ h3 {
   color: var(--muted);
 }
 .card-arrow {
-  font-size: 1.5rem;
+  color: var(--accent);
+  font-size: 1.3rem;
 }
+
+/* Act IV: practice */
 .timeline {
   position: relative;
   display: grid;
@@ -498,7 +717,11 @@ h3 {
   top: 0;
   bottom: 0;
   width: 1px;
-  background: color-mix(in srgb, var(--line) 30%, transparent);
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--line) 32%, transparent),
+    transparent
+  );
   content: '';
 }
 .timeline li {
@@ -514,9 +737,9 @@ h3 {
   top: 2.2rem;
   width: 0.7rem;
   height: 0.7rem;
-  border: 1px solid var(--line);
+  border: 1px solid var(--accent);
   border-radius: 50%;
-  background: var(--surface);
+  background: var(--bg);
 }
 .timeline h3 span {
   color: var(--muted);
@@ -524,34 +747,39 @@ h3 {
   font-size: 0.65em;
   font-weight: 400;
   letter-spacing: 0;
+  text-transform: none;
 }
+
+/* Act V: next move */
 .contact {
-  min-height: 80vh;
+  min-height: 90svh;
   display: grid;
   align-items: center;
 }
 .contact-inner {
   max-width: 75rem;
-  margin: 7rem auto 0;
+  margin: 6rem auto 0;
 }
 .contact-title {
-  max-width: 10ch;
-  margin: 0;
-  font-size: clamp(4rem, 11vw, 11rem);
+  max-width: 14ch;
+  font-size: clamp(2rem, 5.2vw, 5.4rem);
 }
 .contact-copy {
   max-width: 30rem;
-  margin: 4rem 0 2rem;
-  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  margin: 3.5rem 0 2rem;
+  color: color-mix(in srgb, var(--text) 82%, transparent);
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
 }
 .fallback-email {
   color: var(--muted);
   font-family: var(--font-mono);
   font-size: 0.72rem;
+  letter-spacing: 0.06em;
 }
 .site-footer {
-  border-top: 1px solid color-mix(in srgb, var(--line) 25%, transparent);
-  padding: 1.5rem 0;
+  border-top: 1px solid color-mix(in srgb, var(--line) 16%, transparent);
+  /* Clear of the viewfinder readout that rides the bottom edge. */
+  padding: 1.75rem 0 4rem;
 }
 .footer-inner {
   display: flex;
@@ -559,7 +787,8 @@ h3 {
   gap: 1rem;
   color: var(--muted);
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 .footer-inner div {
@@ -573,9 +802,12 @@ h3 {
 }
 .not-found h1,
 .case-study h1 {
-  max-width: 12ch;
+  max-width: 16ch;
   margin: 2rem 0;
-  font-size: clamp(5rem, 14vw, 12rem);
+  font-size: clamp(2.2rem, 6.4vw, 6rem);
+}
+.not-found em {
+  color: inherit;
 }
 .case-nav {
   display: flex;
@@ -583,18 +815,19 @@ h3 {
   padding: 1.5rem var(--gutter);
   font-family: var(--font-mono);
   font-size: 0.7rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 .case-summary {
   max-width: 35rem;
-  font-size: clamp(1.3rem, 2.5vw, 2rem);
+  font-size: clamp(1.2rem, 2.2vw, 1.8rem);
 }
 .case-facts {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
   margin: 7rem 0;
-  border-block: 1px solid color-mix(in srgb, var(--line) 25%, transparent);
+  border-block: 1px solid color-mix(in srgb, var(--line) 18%, transparent);
   padding-block: 1.5rem;
 }
 .case-facts p {
@@ -604,27 +837,44 @@ h3 {
 }
 .case-placeholder {
   display: grid;
-  min-height: 30rem;
+  aspect-ratio: 2.39;
   place-items: center;
-  background: var(--surface);
+  background: linear-gradient(160deg, #15171b, #08090b);
   color: var(--muted);
   text-align: center;
 }
 .case-study article {
   max-width: 42rem;
   margin: 8rem auto;
-  font-size: 1.2rem;
+  font-size: 1.15rem;
 }
 .case-study article h2 {
-  font-size: 4rem;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
 }
 .case-next {
-  border-top: 1px solid color-mix(in srgb, var(--line) 25%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--line) 18%, transparent);
   padding-top: 1rem;
 }
 @media (max-width: 800px) {
   .nav-list {
     display: none;
+  }
+  .chapters-button {
+    display: inline-grid;
+  }
+  /* The header must hold wordmark, Acts and Motion on one line at 360px. */
+  .site-nav {
+    gap: 0.5rem;
+  }
+  .wordmark {
+    gap: 0.5rem;
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+  }
+  .control-button-wide {
+    padding-inline: 0.6rem;
+    font-size: 0.58rem;
+    white-space: nowrap;
   }
   .nav-actions {
     gap: 0.5rem;
@@ -632,11 +882,8 @@ h3 {
   .resume-link {
     display: none;
   }
-  .hero-title {
-    margin-block: 3rem 5rem;
-  }
-  .hero-orbit {
-    right: -11rem;
+  .hero-eclipse {
+    right: -34vmin;
     opacity: 0.7;
   }
   .hero-bottom,
@@ -647,11 +894,8 @@ h3 {
     display: grid;
   }
   .hero-actions {
-    margin-top: 2rem;
+    margin-top: 1rem;
     flex-wrap: wrap;
-  }
-  .scroll-hint {
-    right: var(--gutter);
   }
   .facts,
   .project-grid,
@@ -659,7 +903,7 @@ h3 {
     grid-template-columns: 1fr;
   }
   .project-grid {
-    gap: 4rem;
+    gap: 3rem;
   }
   .timeline li {
     grid-template-columns: 1fr;
@@ -670,116 +914,31 @@ h3 {
   }
 }
 
-/* Motion: type */
-[data-reveal] {
-  font-variation-settings: 'wdth' var(--wdth, 88);
-}
+/* Motion: type arrives as a rack focus, out of blur into sharpness. */
 .word-mask {
   display: inline-block;
-  overflow: hidden;
-  /* Room for descenders and italic overhang inside the mask. */
-  padding: 0.08em 0.06em 0.16em;
-  margin: -0.08em -0.06em -0.16em;
-  vertical-align: top;
 }
 .word {
   display: inline-block;
-  transform: translateY(115%) rotate(4deg);
-  transform-origin: 0 100%;
-  transition: transform var(--slow) var(--ease-out);
-  transition-delay: calc(var(--i) * 55ms);
+  opacity: 0;
+  filter: blur(14px);
+  transform: scale(1.03);
+  transition:
+    opacity 1000ms var(--ease-film),
+    filter 1000ms var(--ease-film),
+    transform 1400ms var(--ease-out);
+  transition-delay: calc(var(--i) * 90ms);
 }
 [data-reveal].is-in .word,
 :root[data-motion='off'] .word {
+  opacity: 1;
+  filter: none;
   transform: none;
 }
-.marquee-track {
-  display: flex;
-  width: max-content;
-  will-change: transform;
-}
-.marquee-track span {
-  flex: none;
-  white-space: nowrap;
-}
-.section-number {
-  color: transparent;
-  background: linear-gradient(
-    to top,
-    var(--accent) calc(var(--fill, 1) * 100%),
-    transparent calc(var(--fill, 1) * 100%)
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-stroke: 1px color-mix(in srgb, var(--text) 45%, transparent);
-}
 
-/* Hero fits one viewport so the pitch and both buttons sit above the fold. */
-.hero {
-  min-height: calc(100svh - 4.6rem);
-  padding-block: 0;
-}
-.hero-inner {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  min-height: inherit;
-  padding-block: 2rem 2.5rem;
-}
-.hero .section-number {
-  font-size: clamp(2.5rem, 5vw, 4.5rem);
-}
-.hero-title {
-  max-width: none;
-  margin: clamp(1rem, 3svh, 2.5rem) 0 clamp(1.5rem, 4svh, 3rem);
-  font-size: min(var(--display-size), 25svh);
-}
-.availability {
-  width: fit-content;
-  margin-top: 1rem;
-}
-.scroll-hint {
-  bottom: 2.5rem;
-}
-
-/* The page-long line sits above section backgrounds and below their content. */
-.page {
-  position: relative;
-}
-.page > section > .container {
-  position: relative;
-  z-index: 2;
-}
-.master-line {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-}
-.master-line path {
-  fill: none;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
-}
-.master-line-ghost {
-  stroke: color-mix(in srgb, var(--line) 9%, transparent);
-  stroke-width: 1;
-  stroke-dasharray: 2 8;
-}
-.master-line-path {
-  stroke: var(--accent);
-  stroke-width: 1.75;
-}
-.master-line-tip {
-  fill: var(--accent);
-  filter: drop-shadow(0 0 8px var(--accent));
-  transition: opacity var(--fast) ease;
-}
-
-/* Preloader: a typographic curtain. Only visible while <html> carries .preloading. */
+/* Title sequence: a line of light, the title card, then the curtains part. Pure CSS, so it plays
+   before hydration; Preloader.tsx only decides when to leave. Visible only while <html> has
+   .preloading. */
 .preloader {
   display: none;
 }
@@ -790,125 +949,111 @@ h3 {
   position: fixed;
   inset: 0;
   z-index: 100;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: 1rem;
-  padding: 1.5rem var(--gutter) 2rem;
-  background: var(--bg);
-  color: var(--text);
+  display: block;
   cursor: pointer;
-  clip-path: inset(0 0 0 0);
-  transition: clip-path 600ms var(--ease-out);
 }
-.preloader.is-leaving {
-  clip-path: inset(0 0 100% 0) !important;
-}
-.preloader-top {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-}
-.preloader-index {
-  position: absolute;
-  top: 13%;
-  left: var(--gutter);
-  display: grid;
-  gap: 0.35rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.preloader-index li {
-  opacity: 0.3;
-  transition: opacity var(--fast) ease;
-}
-.preloader-index li[data-on] {
-  color: var(--accent);
-  opacity: 1;
-}
-.preloader-index span {
-  display: inline-block;
-  width: 2.2em;
-}
-/* Every word shares one cell; a mask hides the ones waiting below and the ones already gone. */
-.preloader-stage {
-  display: grid;
-  align-self: center;
-  overflow: hidden;
-  padding-block: 0.12em 0.2em;
-  font-size: clamp(5.5rem, 19vw, 19rem);
-  line-height: 0.92;
-}
-.preloader-stage [data-word] {
-  grid-area: 1 / 1;
-  white-space: nowrap;
-  transition: transform 300ms var(--ease-out);
-}
-.preloader-stage .font-display {
-  /* The width axis opens up as the count runs. */
-  font-variation-settings: 'wdth' calc(75 + var(--p, 0) * 25);
-}
-.preloader-stage .font-serif {
-  color: var(--accent);
-}
-.preloader-stage .preloader-name {
-  font-size: 0.62em;
-  align-self: center;
-}
-.preloader-stage [data-state='next'] {
-  transform: translateY(120%);
-}
-.preloader-stage [data-state='past'] {
-  transform: translateY(-125%);
-}
-/* The name is set smaller than its cell, so it has further to travel to clear the mask. */
-.preloader-stage .preloader-name[data-state='next'] {
-  transform: translateY(280%);
-}
-.preloader.is-leaving .preloader-stage [data-word] {
-  transform: translateY(-125%);
-}
-.preloader-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
-  gap: 2rem;
-}
-.preloader-count {
-  font-size: clamp(3.5rem, 13vw, 12rem);
-  line-height: 0.8;
-  font-variant-numeric: tabular-nums;
-  color: transparent;
-  background: linear-gradient(
-    to top,
-    var(--accent) calc(var(--p, 0) * 100%),
-    transparent calc(var(--p, 0) * 100%)
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-stroke: 1px color-mix(in srgb, var(--text) 55%, transparent);
-}
-.preloader-bar {
+.curtain {
   position: absolute;
   left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 3px;
-  background: var(--accent);
-  transform: scaleX(var(--p, 0));
-  transform-origin: 0 50%;
+  right: 0;
+  height: 50%;
+  background: #000;
+  transition: transform 1300ms cubic-bezier(0.76, 0, 0.24, 1);
 }
-@media (max-width: 800px) {
-  .preloader-top span:nth-child(2) {
-    display: none;
+.curtain-top {
+  top: 0;
+}
+.curtain-bottom {
+  bottom: 0;
+}
+.preloader.is-leaving .curtain-top {
+  transform: translateY(-101%);
+}
+.preloader.is-leaving .curtain-bottom {
+  transform: translateY(101%);
+}
+.seq {
+  position: absolute;
+  inset: 0;
+  transition: opacity 500ms ease;
+}
+.preloader.is-leaving .seq {
+  opacity: 0;
+}
+.seq-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--accent) 22%,
+    #fff3df 50%,
+    var(--accent) 78%,
+    transparent
+  );
+  box-shadow: 0 0 22px 2px color-mix(in srgb, var(--accent) 55%, transparent);
+  transform: scaleX(0);
+  animation: seq-line 1000ms 150ms var(--ease-film) forwards;
+}
+.seq-title,
+.seq-role {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  opacity: 0;
+}
+.seq-title {
+  bottom: calc(50% + 1.6rem);
+  padding-left: 0.24em;
+  font-size: clamp(1.7rem, 5vw, 5rem);
+  letter-spacing: 0.24em;
+  animation: seq-title 1200ms 450ms var(--ease-film) forwards;
+}
+.seq-role {
+  top: calc(50% + 1.4rem);
+  letter-spacing: 0.34em;
+  animation: seq-fade 700ms 1250ms ease forwards;
+}
+.seq-skip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2rem;
+  text-align: center;
+  opacity: 0;
+  animation: seq-fade 600ms 1400ms ease forwards;
+}
+@keyframes seq-line {
+  to {
+    transform: scaleX(1);
   }
-  .preloader-index {
-    top: 16%;
+}
+/* Opacity, blur and scale only: animating letter-spacing would re-run layout every frame. */
+@keyframes seq-title {
+  from {
+    opacity: 0;
+    filter: blur(14px);
+    transform: scale(1.04);
+  }
+  to {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+}
+@keyframes seq-fade {
+  to {
+    opacity: 1;
   }
 }
 
-/* WebGL backdrop: behind all content, never interactive. */
-.shape-layer {
+/* WebGL world: behind all content, never interactive. */
+.world-layer {
   position: fixed;
   inset: 0;
   z-index: -1;
@@ -916,107 +1061,156 @@ h3 {
   opacity: 0;
   transition: opacity 1.2s ease;
 }
-.shape-layer[data-ready='true'] {
+.world-layer[data-ready='true'] {
   opacity: 1;
 }
-/* Tinted sections let the form show through instead of hiding it. */
-.about,
-.experience {
-  background: color-mix(in srgb, var(--surface) 72%, transparent);
-}
-:root.has-shape .hero-orbit {
+
+/* ASCII layer: glyphs behind the page, above the 3D world, never interactive. */
+.ascii-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
   opacity: 0;
-  transition: opacity var(--slow) ease;
+  transition: opacity 1.6s ease;
+}
+.ascii-layer[data-ready='true'] {
+  opacity: 1;
 }
 
-/* Splash: the first phase of the intro. Pure CSS, so it draws before any script runs. */
-.preloader-splash {
+/* Edge scrubber: the film's progress bar, with a tick per act. Decorative; the nav navigates. */
+.scrubber {
+  --p: 0;
+  position: fixed;
+  top: 50%;
+  right: clamp(0.75rem, 1.6vw, 1.75rem);
+  z-index: 40;
+  width: 1px;
+  height: 42svh;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: opacity var(--slow) ease;
+}
+:root.preloading .scrubber {
+  opacity: 0;
+}
+.scrubber-track,
+.scrubber-fill {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 1px;
+}
+.scrubber-track {
+  height: 100%;
+  background: color-mix(in srgb, var(--line) 18%, transparent);
+}
+.scrubber-fill {
+  height: calc(var(--p) * 100%);
+  background: var(--accent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+.scrubber-tick {
+  --at: 0;
+  position: absolute;
+  top: calc(var(--at) * 100%);
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  opacity: 0.5;
+  transform: translateY(-50%);
+  transition:
+    opacity var(--medium) ease,
+    color var(--medium) ease;
+}
+.scrubber-tick::after {
+  width: 0.55rem;
+  height: 1px;
+  background: currentColor;
+  content: '';
+}
+.scrubber-tick[data-active] {
+  color: var(--accent);
+  opacity: 1;
+}
+@media (max-width: 800px) {
+  .scrubber-tick span {
+    display: none;
+  }
+}
+
+/* Intertitles: a black title card between acts, resolving in and out as it crosses the frame. */
+.intertitle {
   display: grid;
+  height: 62svh;
   place-content: center;
   justify-items: center;
-  gap: clamp(1rem, 3svh, 2rem);
+  gap: 1.1rem;
   text-align: center;
-  transition:
-    opacity 320ms ease,
-    transform 520ms var(--ease-out);
 }
-.preloader[data-phase='count'] .preloader-splash,
-.preloader.is-leaving .preloader-splash {
-  opacity: 0;
-  transform: translateY(-5%) scale(0.96);
+.intertitle-act {
+  color: var(--muted);
+  font-family: var(--font-display);
+  font-size: clamp(0.75rem, 1.1vw, 0.95rem);
+  letter-spacing: 0.6em;
+  padding-left: 0.6em;
+  text-transform: uppercase;
 }
-.preloader
-  :is(.preloader-top, .preloader-index, .preloader-stage, .preloader-bottom, .preloader-bar) {
-  transition: opacity 320ms ease;
-}
-.preloader[data-phase='splash']
-  :is(.preloader-top, .preloader-index, .preloader-stage, .preloader-bottom, .preloader-bar) {
-  opacity: 0;
-}
-.splash-mark {
-  width: clamp(4.5rem, 11vw, 8.5rem);
-  overflow: visible;
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 3;
-  stroke-linecap: round;
-  animation: splash-turn 900ms var(--ease-out) both;
-}
-.splash-ring,
-.splash-spoke {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: splash-draw 520ms var(--ease-out) forwards;
-}
-.splash-ring {
-  stroke-width: 1.5;
-  animation-duration: 760ms;
-}
-.splash-spoke:nth-of-type(1) {
-  animation-delay: 120ms;
-}
-.splash-spoke:nth-of-type(2) {
-  animation-delay: 190ms;
-}
-.splash-spoke:nth-of-type(3) {
-  animation-delay: 260ms;
-}
-.splash-spoke:nth-of-type(4) {
-  animation-delay: 330ms;
-}
-.splash-name {
+.intertitle-name {
   margin: 0;
-  font-size: clamp(2.75rem, 8vw, 7rem);
-  animation: splash-set 640ms 180ms var(--ease-out) both;
+  font-size: clamp(2.4rem, 6.5vw, 6.5rem);
+  line-height: 1;
 }
-.splash-name em {
-  color: var(--accent);
+.section:has(.intertitle) {
+  padding-top: 0;
 }
-.splash-role {
-  animation: splash-fade 400ms 480ms ease both;
+
+/* Cross-dissolves: sections fade in as they enter and out as they leave. Scroll-driven CSS where
+   supported; elsewhere the content is simply visible. */
+@supports (animation-timeline: view()) {
+  :root:not([data-motion='off']) .section:not(.hero) > .container {
+    animation:
+      dissolve-in linear both,
+      dissolve-out linear both;
+    animation-timeline: view(), view();
+    animation-range:
+      entry 0% entry 45%,
+      exit 55% exit 100%;
+  }
+  :root:not([data-motion='off']) .intertitle {
+    animation: title-card linear both;
+    animation-timeline: view();
+    animation-range: cover 10% cover 90%;
+  }
 }
-@keyframes splash-draw {
+@keyframes dissolve-in {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+  }
+}
+@keyframes dissolve-out {
   to {
-    stroke-dashoffset: 0;
-  }
-}
-@keyframes splash-turn {
-  from {
-    transform: rotate(-90deg) scale(0.8);
-  }
-}
-/* The name arrives loosely tracked and tightens into place, like type being set. */
-@keyframes splash-set {
-  from {
     opacity: 0;
-    letter-spacing: 0.14em;
-    transform: translateY(0.25em);
+    filter: blur(8px);
   }
 }
-@keyframes splash-fade {
-  from {
+@keyframes title-card {
+  0%,
+  100% {
     opacity: 0;
+    filter: blur(14px);
+  }
+  38%,
+  62% {
+    opacity: 1;
+    filter: none;
   }
 }

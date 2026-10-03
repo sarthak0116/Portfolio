@@ -1,4 +1,5 @@
 import { Reveal } from '@/components/motion/Reveal';
+import { Intertitle } from '@/components/ui/Intertitle';
 import { SectionLabel } from '@/components/ui/SectionLabel';
 
 const entries = [
@@ -19,7 +20,8 @@ const entries = [
 export function Experience() {
   return (
     <section className="section experience" id="experience" aria-labelledby="experience-title">
-      <div className="container">
+      <Intertitle number="04">Practice</Intertitle>
+      <div className="container" id="experience-body">
         <SectionLabel number="04">Practice</SectionLabel>
         <div className="section-heading-row">
           <Reveal as="h2" id="experience-title" className="font-display section-title">

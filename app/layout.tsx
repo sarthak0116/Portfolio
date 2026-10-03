@@ -1,15 +1,11 @@
 import type { Metadata, Viewport } from 'next';
-import { Bricolage_Grotesque, Geist, Geist_Mono, Instrument_Serif } from 'next/font/google';
+import { Geist, Geist_Mono, Instrument_Serif, Jost } from 'next/font/google';
 import { headers } from 'next/headers';
 import { site } from '@/content/site';
 import { themeScript } from '@/lib/theme';
 import './globals.css';
 
-const display = Bricolage_Grotesque({
-  variable: '--font-display',
-  subsets: ['latin'],
-  display: 'swap',
-});
+const display = Jost({ variable: '--font-display', subsets: ['latin'], display: 'swap' });
 const serif = Instrument_Serif({
   variable: '--font-serif',
   subsets: ['latin'],
@@ -39,7 +35,7 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport: Viewport = { themeColor: '#10110f', width: 'device-width', initialScale: 1 };
+export const viewport: Viewport = { themeColor: '#040405', width: 'device-width', initialScale: 1 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const nonce = (await headers()).get('x-nonce') ?? undefined;

@@ -1,11 +1,13 @@
 import { Reveal } from '@/components/motion/Reveal';
 import { skills } from '@/content/skills';
+import { Intertitle } from '@/components/ui/Intertitle';
 import { SectionLabel } from '@/components/ui/SectionLabel';
 
 export function About() {
   return (
     <section className="section about" id="about" aria-labelledby="about-title">
-      <div className="container">
+      <Intertitle number="02">Context</Intertitle>
+      <div className="container" id="about-body">
         <SectionLabel number="02">Context</SectionLabel>
         <div className="about-grid">
           <Reveal as="h2" id="about-title" className="font-display section-title">

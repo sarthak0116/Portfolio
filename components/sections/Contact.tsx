@@ -1,17 +1,18 @@
 import { Reveal } from '@/components/motion/Reveal';
 import { site } from '@/content/site';
 import { ArrowLink } from '@/components/ui/ArrowLink';
+import { Intertitle } from '@/components/ui/Intertitle';
 import { SectionLabel } from '@/components/ui/SectionLabel';
 
 export function Contact() {
   return (
     <section className="section contact" id="contact" aria-labelledby="contact-title">
-      <div className="container">
+      <Intertitle number="05">Next move</Intertitle>
+      <div className="container" id="contact-body">
         <SectionLabel number="05">Next move</SectionLabel>
         <div className="contact-inner">
           <Reveal as="h2" id="contact-title" className="font-display contact-title">
-            Let’s make
-            <br />
+            Let’s make <br />
             <em className="font-serif">something</em> move.
           </Reveal>
           <p className="contact-copy">
